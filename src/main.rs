@@ -15,7 +15,11 @@ async fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Install { url, model, project } => {
+        Commands::Install {
+            url,
+            model,
+            project,
+        } => {
             let target = prompt::resolve_target(ScopeFlags { model, project })?;
             github::install(&url, &target).await?;
         }
@@ -23,11 +27,19 @@ async fn main() -> Result<()> {
             let target = prompt::resolve_target(ScopeFlags { model, project })?;
             platform::list_skills(&target)?;
         }
-        Commands::Uninstall { name, model, project } => {
+        Commands::Uninstall {
+            name,
+            model,
+            project,
+        } => {
             let target = prompt::resolve_target(ScopeFlags { model, project })?;
             platform::uninstall(&name, &target)?;
         }
-        Commands::Update { name, model, project } => {
+        Commands::Update {
+            name,
+            model,
+            project,
+        } => {
             let target = prompt::resolve_target(ScopeFlags { model, project })?;
             github::update(name.as_deref(), &target).await?;
         }

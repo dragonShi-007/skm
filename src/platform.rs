@@ -1,7 +1,6 @@
 use anyhow::{Context, Result};
 use std::path::{Path, PathBuf};
 
-
 pub fn cc_skills_dir() -> Result<PathBuf> {
     let home = dirs::home_dir().context("Could not determine home directory")?;
 
@@ -19,7 +18,10 @@ pub fn cc_skills_dir() -> Result<PathBuf> {
 
 pub fn list_skills(dir: &Path) -> Result<()> {
     if !dir.exists() {
-        println!("No skills installed (directory not found: {})", dir.display());
+        println!(
+            "No skills installed (directory not found: {})",
+            dir.display()
+        );
         return Ok(());
     }
 

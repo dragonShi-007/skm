@@ -15,8 +15,7 @@ pub struct Cli {
 #[derive(Subcommand)]
 pub enum Commands {
     /// Install a skill from a GitHub URL
-    #[command(
-        after_help = "\
+    #[command(after_help = "\
 TARGET FLAGS (pick at most one):
   -m, --model MODEL  Install to the path registered for MODEL (e.g. cc, cursor)
   -p                 Install to the current directory
@@ -27,8 +26,7 @@ EXAMPLES:
   skm install https://github.com/obra/superpowers/tree/main/skills/brainstorming -m cc
   skm install https://github.com/obra/superpowers/tree/main/skills/brainstorming -p
   skm install https://github.com/obra/superpowers/tree/main/skills/brainstorming -p ~/myproject/skills
-  skm install https://github.com/obra/superpowers/tree/main/skills/brainstorming -p /tmp/test"
-    )]
+  skm install https://github.com/obra/superpowers/tree/main/skills/brainstorming -p /tmp/test")]
     Install {
         /// Skill name (e.g. brainstorming) or full GitHub URL
         /// (format: https://github.com/OWNER/REPO/tree/BRANCH/path/to/skill)
@@ -45,14 +43,12 @@ EXAMPLES:
     },
 
     /// List installed skills in a target directory
-    #[command(
-        after_help = "\
+    #[command(after_help = "\
 EXAMPLES:
   skm list -m cc
   skm list -p
   skm list -p ~/myproject/skills
-  skm list"
-    )]
+  skm list")]
     List {
         /// Model name whose registered path will be used
         #[arg(short = 'm', long, value_name = "MODEL")]
@@ -65,13 +61,11 @@ EXAMPLES:
     },
 
     /// Uninstall a skill by name
-    #[command(
-        after_help = "\
+    #[command(after_help = "\
 EXAMPLES:
   skm uninstall brainstorming -m cc
   skm uninstall brainstorming -p
-  skm uninstall brainstorming -p ~/myproject/skills"
-    )]
+  skm uninstall brainstorming -p ~/myproject/skills")]
     Uninstall {
         /// Name of the skill to remove (must match the directory name under skills/)
         name: String,
@@ -87,14 +81,12 @@ EXAMPLES:
     },
 
     /// Update an installed skill (or all skills) to the latest version
-    #[command(
-        after_help = "\
+    #[command(after_help = "\
 EXAMPLES:
   skm update brainstorming -m cc
   skm update brainstorming -p
   skm update -m cc
-  skm update -p ~/myproject/skills"
-    )]
+  skm update -p ~/myproject/skills")]
     Update {
         /// Skill name to update; omit to update all skills in the target directory
         name: Option<String>,
@@ -110,8 +102,7 @@ EXAMPLES:
     },
 
     /// Manage skm configuration and model mappings
-    #[command(
-        after_help = "\
+    #[command(after_help = "\
 The built-in model 'cc' always maps to ~/.claude/skills/ and cannot be removed.
 
 EXAMPLES:
@@ -120,8 +111,7 @@ EXAMPLES:
   skm config set zed /Users/me/.zed/skills
   skm config rm cursor
   skm config set default-target cursor
-  skm config set default-target project"
-    )]
+  skm config set default-target project")]
     Config {
         #[command(subcommand)]
         action: ConfigAction,

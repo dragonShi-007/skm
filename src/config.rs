@@ -106,7 +106,8 @@ pub fn resolve_model(name: &str) -> Result<PathBuf> {
     anyhow::bail!(
         "Unknown model '{}'. Run 'skm model list' to see available models, \
          or 'skm model add {} <path>' to define one.",
-        name, name
+        name,
+        name
     )
 }
 

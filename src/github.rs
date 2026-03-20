@@ -84,9 +84,7 @@ struct Downloader {
 
 impl Downloader {
     fn new(owner: &str, repo: &str, branch: &str) -> Result<Self> {
-        let client = reqwest::Client::builder()
-            .user_agent("skm/0.1.0")
-            .build()?;
+        let client = reqwest::Client::builder().user_agent("skm/0.1.0").build()?;
         Ok(Self {
             client,
             owner: owner.to_string(),
@@ -117,11 +115,7 @@ impl Downloader {
             .context("Failed to reach GitHub API")?;
 
         if !resp.status().is_success() {
-            anyhow::bail!(
-                "GitHub API returned {}: {}",
-                resp.status(),
-                api_url
-            );
+            anyhow::bail!("GitHub API returned {}: {}", resp.status(), api_url);
         }
 
         let body: serde_json::Value = resp.json().await?;
@@ -132,7 +126,8 @@ impl Downloader {
                 match item.content_type.as_str() {
                     "file" => {
                         if let Some(dl_url) = item.download_url {
-                            let rel_str = item.path
+                            let rel_str = item
+                                .path
                                 .strip_prefix(root_prefix)
                                 .unwrap_or(&item.path)
                                 .trim_start_matches('/');
@@ -141,7 +136,10 @@ impl Downloader {
                             } else {
                                 PathBuf::from(rel_str)
                             };
-                            files.push(FileEntry { download_url: dl_url, relative_path });
+                            files.push(FileEntry {
+                                download_url: dl_url,
+                                relative_path,
+                            });
                         }
                     }
                     "dir" => {
@@ -153,7 +151,8 @@ impl Downloader {
         } else {
             let item: GithubContent = serde_json::from_value(body)?;
             if let Some(dl_url) = item.download_url {
-                let rel_str = item.path
+                let rel_str = item
+                    .path
                     .strip_prefix(root_prefix)
                     .unwrap_or(&item.path)
                     .trim_start_matches('/');
@@ -162,7 +161,10 @@ impl Downloader {
                 } else {
                     PathBuf::from(rel_str)
                 };
-                files.push(FileEntry { download_url: dl_url, relative_path });
+                files.push(FileEntry {
+                    download_url: dl_url,
+                    relative_path,
+                });
             }
         }
 
@@ -194,14 +196,13 @@ impl Downloader {
     async fn download_files(&self, files: Vec<FileEntry>, target_dir: &Path) -> Result<()> {
         let total = files.len() as u64;
         let pb = ProgressBar::new(total);
-        pb.set_style(
-            ProgressStyle::with_template(
-                "{spinner:.green} [{bar:40.cyan/blue}] {pos}/{len} {wide_msg}",
-            )?,
-        );
+        pb.set_style(ProgressStyle::with_template(
+            "{spinner:.green} [{bar:40.cyan/blue}] {pos}/{len} {wide_msg}",
+        )?);
 
         for entry in files {
-            let filename = entry.relative_path
+            let filename = entry
+                .relative_path
                 .file_name()
                 .map(|n| n.to_string_lossy().to_string())
                 .unwrap_or_default();
@@ -231,10 +232,7 @@ impl Downloader {
 pub async fn install(url: &str, target_dir: &Path) -> Result<()> {
     let resolved_url;
     let url = if !url.contains('/') {
-        resolved_url = format!(
-            "https://github.com/anthropics/skills/tree/main/{}",
-            url
-        );
+        resolved_url = format!("https://github.com/anthropics/skills/tree/main/{}", url);
         println!("Resolving '{}' from anthropics/skills...", url);
         &resolved_url
     } else {
@@ -249,7 +247,9 @@ pub async fn install(url: &str, target_dir: &Path) -> Result<()> {
     let downloader = Downloader::new(&parsed.owner, &parsed.repo, &parsed.branch)?;
 
     let mut files = Vec::new();
-    downloader.collect_files(&parsed.path, &parsed.path, &mut files).await?;
+    downloader
+        .collect_files(&parsed.path, &parsed.path, &mut files)
+        .await?;
 
     let sha = downloader.latest_commit_sha(&parsed.path).await?;
 
@@ -276,11 +276,11 @@ async fn update_one(name: &str, target_dir: &Path) -> Result<()> {
 
     if !source_file.exists() {
         // No source record: treat skill name as coming from anthropics/skills
-        let url = format!(
-            "https://github.com/anthropics/skills/tree/main/{}",
+        let url = format!("https://github.com/anthropics/skills/tree/main/{}", name);
+        println!(
+            "No source record for '{}', updating from anthropics/skills...",
             name
         );
-        println!("No source record for '{}', updating from anthropics/skills...", name);
         fs::remove_dir_all(&skill_dir).await?;
         return install(&url, target_dir).await;
     }
@@ -306,7 +306,10 @@ async fn update_one(name: &str, target_dir: &Path) -> Result<()> {
 
 async fn update_all(target_dir: &Path) -> Result<()> {
     if !target_dir.exists() {
-        println!("No skills installed (directory not found: {})", target_dir.display());
+        println!(
+            "No skills installed (directory not found: {})",
+            target_dir.display()
+        );
         return Ok(());
     }
 
