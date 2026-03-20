@@ -7,10 +7,6 @@ edition = "2021"
 name = "skm"
 path = "src/main.rs"
 
-[[bin]]
-name = "skill-manager"
-path = "src/main.rs"
-
 [dependencies]
 clap = { version = "4", features = ["derive"] }
 reqwest = { version = "0.12", features = ["json"] }

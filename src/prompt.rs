@@ -20,7 +20,7 @@ pub fn resolve_target(flags: ScopeFlags) -> Result<PathBuf> {
     //   -p alone → current directory
     //   -p <path> → use that path directly
     if let Some(p) = flags.project {
-        if p == PathBuf::from(".") {
+        if p == std::path::Path::new(".") {
             return Ok(env::current_dir()?);
         }
         return Ok(p);
