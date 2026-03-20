@@ -232,7 +232,7 @@ impl Downloader {
 pub async fn install(url: &str, target_dir: &Path) -> Result<()> {
     let resolved_url;
     let url = if !url.contains('/') {
-        resolved_url = format!("https://github.com/anthropics/skills/tree/main/{}", url);
+        resolved_url = format!("https://github.com/anthropics/skills/tree/main/skills/{}", url);
         println!("Resolving '{}' from anthropics/skills...", url);
         &resolved_url
     } else {
@@ -276,7 +276,7 @@ async fn update_one(name: &str, target_dir: &Path) -> Result<()> {
 
     if !source_file.exists() {
         // No source record: treat skill name as coming from anthropics/skills
-        let url = format!("https://github.com/anthropics/skills/tree/main/{}", name);
+        let url = format!("https://github.com/anthropics/skills/tree/main/skills/{}", name);
         println!(
             "No source record for '{}', updating from anthropics/skills...",
             name
