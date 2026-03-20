@@ -230,15 +230,6 @@ impl Downloader {
 }
 
 pub async fn install(url: &str, target_dir: &Path) -> Result<()> {
-    let resolved_url;
-    let url = if !url.contains('/') {
-        resolved_url = format!("https://github.com/anthropics/skills/tree/main/{}", url);
-        println!("Resolving '{}' from anthropics/skills...", url);
-        &resolved_url
-    } else {
-        url
-    };
-
     let parsed = ParsedUrl::parse(url)?;
     let skill_dir = target_dir.join(&parsed.skill_name);
 
@@ -275,14 +266,10 @@ async fn update_one(name: &str, target_dir: &Path) -> Result<()> {
     let source_file = skill_dir.join(".skm-source");
 
     if !source_file.exists() {
-        // No source record: treat skill name as coming from anthropics/skills
-        let url = format!("https://github.com/anthropics/skills/tree/main/{}", name);
-        println!(
-            "No source record for '{}', updating from anthropics/skills...",
+        anyhow::bail!(
+            "'{}' has no source record. Please reinstall with a full GitHub URL:\n  skm install https://github.com/OWNER/REPO/tree/BRANCH/path/to/skill",
             name
         );
-        fs::remove_dir_all(&skill_dir).await?;
-        return install(&url, target_dir).await;
     }
 
     let content = fs::read_to_string(&source_file).await?;
