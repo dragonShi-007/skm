@@ -1,0 +1,24 @@
+[package]
+name = "skill-manager"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "skm"
+path = "src/main.rs"
+
+[[bin]]
+name = "skill-manager"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+reqwest = { version = "0.12", features = ["json"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+dirs = "5"
+dialoguer = "0.11"
+anyhow = "1"
+indicatif = "0.17"
+toml = "0.8"
